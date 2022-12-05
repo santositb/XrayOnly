@@ -7,7 +7,7 @@ function make_folder_xray() {
     mkdir -p /etc/xray
     mkdir -p /var/log/xray
     chmod +x /var/log/xray
-    touch /etc/xray/domain
+    echo "${domain}" >/etc/xray/domain
     touch /var/log/xray/access.log
     touch /var/log/xray/error.log
 }
