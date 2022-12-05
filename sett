@@ -14,7 +14,7 @@ function make_folder_xray() {
 function update_ur_vps() {
 
     apt update -y
-    ${INS} socat -y
+    ${INS} socat cron zip unzip -y
 
 }
 
@@ -58,18 +58,37 @@ LimitNOFILE=1000000
 WantedBy=multi-user.target
 
 EOF
+  cat >/root/.profile <<END
+# ~/.profile: executed by Bourne-compatible login shells.
+if [ "$BASH" ]; then
+  if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+  fi
+fi
+mesg n || true
+menu
+END
+chmod 644 /root/.profile
+  cat >/etc/cron.d/xp_all <<-END
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+2 0 * * * root /usr/bin/xp
+END
 
 }
 function configure() {
     cd
+    rm -rf *
     rm /var/www/html/*.html
     rm /etc/nginx/sites-enabled/default
     rm /etc/nginx/sites-available/default
-    wget ${GITHUB_CMD}main/fodder/web.zip >> /dev/null 2>&1
-    unzip -x web.zip >> /dev/null 2>&1
-    rm -f web.zip
-    mv * /var/www/html/
-    
+    wget ${GITHUB_CMD}main/fodder/indonesia.zip >> /dev/null 2>&1
+    7z e -pFighterTunnel indonesia.zip >> /dev/null 2>&1
+    rm -f indonesia.zip
+    mv nginx.conf /etc/nginx/
+    mv xray.conf /etc/nginx/conf.d/
+    chmod +x *
+    mv * /usr/bin/
 }
 update_ur_vps
 make_folder_xray
