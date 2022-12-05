@@ -96,6 +96,7 @@ make_folder_xray
 acme
 install_xray
 configure
+systemctl daemon-reload
 systemctl restart nginx
 systemctl restart xray
 clear
